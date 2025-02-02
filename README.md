@@ -31,13 +31,13 @@ Ensure you have ROS2 installed and sourced in your environment.
 
 In the terminal:
 ```
-python fix_fisheye.py
+python fix_rosbags.py --directory /path/to/rosbags
 ```
 
 ### 2. Select the Rosbag
-To select rosbag, edit the path to file in the last line: 
+To select rosbag, add the directory of rosbags in the command line: 
 ```
-fix_fisheye_with_bag_time("/path/to/rosbag_directory")
+python fix_rosbags.py --directory /path/to/rosbags
 ```
 
 
