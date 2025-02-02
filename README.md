@@ -31,13 +31,13 @@ Ensure you have ROS2 installed and sourced in your environment.
 
 In the terminal:
 ```
-python fix_rosbags.py --directory /path/to/rosbags
+python timestamp_fix.py --directory /path/to/rosbags
 ```
 
 ### 2. Select the Rosbag
 To select rosbag, add the directory of rosbags in the command line: 
 ```
-python fix_rosbags.py --directory /path/to/rosbags
+python timestamp_fix.py --directory /path/to/rosbags
 ```
 
 
