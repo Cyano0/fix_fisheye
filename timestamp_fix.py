@@ -1,10 +1,10 @@
-#!/usr/bin/python3
 import os
 import shutil
 import rosbag2_py  # Python API for handling ROS2 bags
 import rclpy.serialization
 from sensor_msgs.msg import Image
 from builtin_interfaces.msg import Time  # ROS2 message for timestamping
+
 
 def fix_fisheye_with_bag_time(bag_path):
     """
@@ -18,7 +18,7 @@ def fix_fisheye_with_bag_time(bag_path):
 
     # Ensure the input bag is a directory, not a .db3 file
     if not os.path.isdir(bag_path):
-        print(f"Error: {bag_path} is not a valid ROS2 bag directory.")
+        print(f"Skipping {bag_path}: Not a valid ROS2 bag directory.")
         return
 
     temp_bag = bag_path + "_temp"  # Temporary bag directory
@@ -80,5 +80,37 @@ def fix_fisheye_with_bag_time(bag_path):
     except Exception as e:
         print(f"Error replacing original bag: {e}")
 
-# Example usage (provide the ROS bag directory, not .db3 file)
-fix_fisheye_with_bag_time("/media/prabuddhi/Crucial X9/Human_sensing_bags/Day2/1/1_0")
+
+def process_directory(directory="."):
+    """
+    Processes all ROS2 bag directories in the given directory.
+
+    Args:
+        directory (str): Path to the directory containing ROS2 bags. Defaults to the current directory.
+    """
+    print(f"Searching for ROS2 bags in: {directory}")
+
+    # Ensure directory exists
+    if not os.path.exists(directory):
+        print(f"Error: Specified directory '{directory}' does not exist.")
+        return
+
+    # Find all directories that contain ROS2 bag data (ignoring _temp folders)
+    for item in os.listdir(directory):
+        item_path = os.path.join(directory, item)
+        if os.path.isdir(item_path) and not item.endswith("_temp"):
+            # Check if this directory is a valid ROS2 bag
+            if any(f.endswith(".db3") for f in os.listdir(item_path)):  # ROS2 bags have .db3 files inside
+                fix_fisheye_with_bag_time(item_path)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Fix fisheye timestamps in all ROS2 bags in a directory.")
+    parser.add_argument(
+        "-d", "--directory", type=str, default=".", help="Path to the directory containing ROS2 bags (default: current directory)."
+    )
+    args = parser.parse_args()
+
+    process_directory(args.directory)
